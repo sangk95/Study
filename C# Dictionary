@@ -1,0 +1,39 @@
+public class testDic : MonoBehaviour {
+
+	Dictionary<string, int> dic = new Dictionary<string, int>(){
+
+		{"item0", 1},
+		{"item1", 39},
+		{"item2", 384}
+        
+	} ;
+
+	// Key와 Value 넣기
+	dic.Add("item3", 3948) ;
+
+	// Key 지우기
+	dic.Remove("item0") ;
+
+	// Key가 있는지 확인
+	if (dic.ContainsKey("item0")) Debug.Log("true") ;
+
+	// Value가 있는지 확인
+	if (dic.ContainsValue("item0")) Debug.Log("true") ;
+
+	// Key가 있는지 확인과 동시에 Value도 반환
+	if (dic.TryGetValue("item0", out testValue) {		// returns true
+
+		Debug.Log("item0 value : " + testValue) ;		// value at item0
+
+	}
+
+	// Value값 384로 Key값 알아내기
+	string key = dic.FirstOrDefault(x => x.Value == 384).Key ;
+
+	// Key의 오름차순으로 정렬
+	dic.OrderBy(item => item.Key) ;
+
+	// Key의 내림차순으로 정렬
+	dic.OrderByDescending(item => item.Key) ;
+
+}
