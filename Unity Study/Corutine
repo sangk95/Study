@@ -7,6 +7,7 @@
 - 처리 도중 취소가 가능하다.
 - 반환형은 IEnumerator -> 한 개 이상의 yield 반환문을 포함해야 한다. 
 - yield로 반환하는 것은 '일시적으로 CPU 권한을 다른 함수에 위임한다'라는 뜻이다.
+- WaitForSeconds waitSec = new WaitForSeconds(1); 이런식으로 new를 매번 처리하지않게끔.
 
 ⨀ 목적
 하나의 스레드에서 오랫동안 처리되는 작업을 진행하면 스레드가 대기 상태가 된다. 
