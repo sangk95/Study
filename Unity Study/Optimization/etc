@@ -1,1 +1,18 @@
+⨀ Accelerometer Frequency 감소 또는 비활성화 
+Unity는 모바일 기기의 가속도 센서를 1초에도 몇 번씩 풀링합니다.
+애플리케이션에서 가속도 센서를 사용하지 않는다면 비활성화하거나 빈도를 줄이자.
 
+⨀ 트랜스폼 한 번에 이동
+아울러 트랜스폼 이동 시, Transform.SetPositionAndRotation을 사용하여
+위치와 회전을 한 번에 업데이트하세요. 
+이렇게 하면 트랜스폼을 두 번 수정함으로써 발생하는 오버헤드를 방지할 수 있습니다.
+GameObject.Instantiate(prefab, parent);
+->  GameObject.Instantiate(prefab, parent, position, rotation);
+
+⨀ 동적 광원 수 줄이기 
+모바일 게임에는 동적 광원을 지나치게 많이 추가하지 않는 것이 매우 중요합니다.
+동적 메시에는 커스텀 셰이더 이펙트나 라이트 프로브, 정적 메시에는 베이크된 광원과 같은 대안을 고려하자.
+
+⨀ 그림자 비활성화 
+MeshRenderer 및 광원별로 그림자 드리우기를 비활성화할 수 있습니다. 
+가능하면 그림자를 비활성화하여 드로우 콜을 줄이세요.
