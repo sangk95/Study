@@ -1,0 +1,42 @@
+- 박싱/언박싱
+
+값 형식을 참조 형식으로 변환하는 것을 박싱(boxing)이라고 하며, 그 반대를 언박싱(unboxing)이라고 한다.
+이런 변환 과정은 object 타입과 System.ValueType을 상속받은 값 형식의 인스턴스를 섞어 쓰는 경우에 발생한다.
+
+static void Main(string[] args)
+{
+	int a =4;
+    object obj = a; // 박싱: 값 형식인int를 찹조 형식인 object에 대입(object가 부모라 암시적 변환 가능)
+    int b = (int)obj; // 언 박싱: 참조 형식인 object를 값 형식인 int에 대입
+}
+위의 경우 어떤 상황이 벌어지는지를 살펴보자.
+
+int a = 4; 코드에서 a는 지역변수로 스택 메모리에 4라는 4byte값이 저장된다.
+object obj = a; 코드에서 obj는 지역 변수고 스택에 할당된다. 
+하지만 object가 참조형이기 때문에 힙에도 메모리가 할당되고 변수 a의 값이 들어간다.
+즉, 박싱이 발생한 것이다. 이때, obj 지역변수(스택 메모리에 있는것)는 힙에 할당된 주소를 가리킨다.
+int b = (int) obj; 코드에서 b는 지역 변수로 스택 메모리에 b영역이 있고, 힙 메모리에 있는 값을 스택 메모리로 복사한다.(언박싱)
+값 형식을 object로 형변환 하는 것은 힙에 메모리를 할당하는 작업을 동반한다. 
+
+이와 유사하게 메서드에 인자를 전달 때도 발생한다.
+static void Main(string[] args)
+{
+	int a = 1;
+    int b = 2;
+    
+    int c = GetMaxValue(a,b);// 인자로 건네준 a,b는 int기 때문에 object로 박싱이 발생(관리 힙에 할당됨!)    
+}
+private static int GetMaxValue(object v1, object v2)
+{
+	int a = (int) v1;
+    int b = (int) v2;//언박싱
+    if(a>=b)
+    	return a;
+        
+    return b;
+}
+위와 같은 경우 매개변수가 int였다면 그저 스택의 값 복사만으로 끝날 수 있는 문제였지만 
+박싱으로 인해 관리 힙을 사용하게 됐고, 해당 함수가 실행이 끝난 이후 v1,v2를 삭제하기 위하여
+GC가 언젠간 호출되어야 하는 상황이 발생한다. 즉, GC에게 일을 시키게 만든다.
+박싱이 빈번할수록 GC는 바빠지고 프로그램의 수행 성능은 그만큼 떨어진다. 
+따라서 박싱을 과다하게 발생시킬 수 있는 코드는 최대한 줄이자.
