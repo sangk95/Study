@@ -57,3 +57,48 @@ c^2 = a^2 + b^2으로 C^2를 구하고, C^2의 제곱근을 구하기 위해 루
 하지만 k^2와 j^2의 대소 관계가 k^2 > j^2 라면, 그 제곱근인 k > j의 관계도 성립한다.
 따라서 단순히 거리 비교를 하기 위해서라면 제곱근을 구하지 말고 ^2 상태에서 비교하는 것이 좋다.  
 거리의 대소 비교에서는 Vector3.magnitude나 Vector3.Distance 대신 Vector3.sqrMagnitude를 사용하자
+
+⨀ 힙 메모리에 할당 하지 않게하자.
+o Unity 함수 호출에서 발생하는 가비지
+GameObject.tag -> GameObject.CompareTag()
+Input.GetTouch() -> Input.touches
+
+GameObject.tag이나 GameObject.name 접근 시에도 매번 문자열을 생성해서 반환한다. 
+void OnTriggerEnter(Collider other)
+{
+    if(other.gameObject.tag == "Player")
+    {
+        //...
+    }
+}
+태그 비교는 GameObject.CompareTag()를 사용하면 힙 할당을 하지 않는다.
+string playerTag = "Player";
+void OnTriggerEnter(Collider other)
+{
+    if(other.gameObject.CompareTag(playerTag))
+    {
+        //...
+    }
+} 
+
+이외에도 힙 할당을 발생하는 유니티 함수들과 힙 할당을 하지않은 대체용 함수들이 존재한다.
+Input.GetTouch()와 Input.touchCount는 힙 할당을 일으키니 Input.touches를 사용한다.
+
+o 코루틴에서 발생하는 가비지
+yield 자체는 힙 할당을 하지 않지만 전달하는 값은 박싱이 되기 때문에 힙 할당이 발생할 수 있다.
+yield return 0; // 0인 int 값 변수가 boxing되기 때문에 가비지를 발생시킨다.
+new 를 통해 생성하는 객체는 가비지를 만든다.
+---------------------------------------------
+While(true)
+{
+    yield return new WaitForSeconds(1f); // 매번 새로운 객체가 생성된다.
+}
+---------------------------------------------
+WaitForSecond 또한 객체이기 때문에 멤버 변수나 지역변수로 캐싱할 수 있다.
+---------------------------------------------
+WaitForSeconds delay = new WaitForSeconds(1f);
+While(true)
+{
+    yield return delay;
+}
+---------------------------------------------
