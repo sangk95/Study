@@ -35,3 +35,25 @@ material.SetTexture(id, texture);
 int id = Shader.PropertyToID("_MainColor");
 shader.SetGlobalColor(id, color);
 ---------------------------------------------
+
+⨀ Transform
+트랜스폼을 변화시키면 해당 오브젝트의 모든 자식들에게 OnTransformChanged 이벤트가 전파된다.
+여러 계산을 통해 트랜스폼을 변화시킨다면 따로 적용하지 말고, 모든 계산이 끝난 뒤 최종 값을 적용하자.
+아래의 예는 SetPositionAndRotation을 통해 두 번의 트랜스폼 메시지를 한 번으로 최적화할 수 있다.
+// 트랜스폼이 두 번 변한다.
+transform.position = Vector3.one;
+transform.rotation = Quaternion.identity;
+// 트랜스폼이 한번에 적용된다.
+transform.SetPositionAndRotation(Vector3.one, Quaternion.identity);
+Transform.localPosition은 트랜스폼 내부에 캐싱되지만 
+Transform.Position은 가져올 때마다 계산되기 때문에 훨씬 무겁다. 
+Transform.Position을 자주 사용한다면 가능한 한 캐싱하도록 하자.
+
+⨀ sqrMagnitude 단순한 거리 비교
+플레이어를 기준으로 두 몬스터 중 어느 몬스터가 더 가까운가? 는 어느 게임에서나 사용되는 계산식이다.
+플레이어로부터 각 지점의 벡터 값을 뺀 뒤, 벡터의 크기(magnitude)를 통해 거리의 대소를 비교할 수 있다.
+벡터의 크기를 계산할 때는 삼각함수를 통해 제곱근을 계산한다.
+c^2 = a^2 + b^2으로 C^2를 구하고, C^2의 제곱근을 구하기 위해 루트 함수를 사용하게 된다.
+하지만 k^2와 j^2의 대소 관계가 k^2 > j^2 라면, 그 제곱근인 k > j의 관계도 성립한다.
+따라서 단순히 거리 비교를 하기 위해서라면 제곱근을 구하지 말고 ^2 상태에서 비교하는 것이 좋다.  
+거리의 대소 비교에서는 Vector3.magnitude나 Vector3.Distance 대신 Vector3.sqrMagnitude를 사용하자
