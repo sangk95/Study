@@ -16,3 +16,22 @@ GameObject.Instantiate(prefab, parent);
 ⨀ 그림자 비활성화 
 MeshRenderer 및 광원별로 그림자 드리우기를 비활성화할 수 있습니다. 
 가능하면 그림자를 비활성화하여 드로우 콜을 줄이세요.
+
+⨀ parameter ID의 Hash value 캐싱
+animator나 material, shader의 parameter를 호출할 때,
+간편하게 string형으로 호출하는 경우가 많다.
+---------------------------------------------
+animator.SetTrigger("Attack");
+material.SetTexture("_MainMap", texture);
+shader.SetGlobalColor("_MainColor", color);
+---------------------------------------------
+명시성도 좋고 간편하지만, 성능상으로는 매번 문자열에서 Hash로 변환하기때문에 성능상 좋지않다고한다.
+아래와같이 멤버변수로 캐싱해놓고 쓰는 것을 추천한다.
+---------------------------------------------
+int id = Animator.StringToHash("Attack");
+animator.SetTrigger(id);
+int id = Shader.PropertyToID("_MainMap");
+material.SetTexture(id, texture);
+int id = Shader.PropertyToID("_MainColor");
+shader.SetGlobalColor(id, color);
+---------------------------------------------
