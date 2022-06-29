@@ -65,7 +65,7 @@ SetPass에서 알려주는 상태 변경은 쉐이더의 변경 혹은 쉐이더
 
 ⨀ Batching
 - 드로우 콜을 줄이는 작업.
-- Static Batching, Dynamic Batching 두 종류가 있다. 
+- Static Batching, Dynamic Batching, SRP Batcher 세 종류가 있다. 
 
 ο 설명
 유니티에서 배칭을 활용함으로써 드로우 콜을 많이 줄일 수 있기 때문에 거의 필수적으로 사용해야하는 기능.
@@ -122,3 +122,12 @@ GetComponent<Renderer>().material.color = Color.red;
   다이나믹 배칭을 위해서는 오브젝트의 버텍스를 월드스페이스로 변환하는 연산이 CPU에서 이뤄진다.
   따라서 이 연산과정이 드로우 콜보다 시간이 오래걸리면 오히려 효율이 떨어지는 것이다.
   배칭 오버헤드와 드로우 콜 시간을 비교하여 더 빠른 쪽으로 하는 것이 맞다.
+  
+  
+ο SRP Batcher
+유니티는 기존에 렌더링마다 매번 CPU연산을 통해 GPU에 메모리를 복사하고 렌더링했습니다.
+SRP배처는 System Memory를 Object의 Transform 정보와 Material 두 가지로 나눠서 처리했습니다.
+일단 Object의 Transform 정보는 똑같이 GPU에 보냅니다.
+다른 점은 GPU 내에서도 cache 역할을 하는 table 같은 것을 두고 전부 보내지 않고 사용하여 GPU Uniform Buffer로 보내는 양을 줄였습니다.
+또한 Material 정보는 GPU 메모리에 상주하도록 하였고 해당 메모리는 System Memory에서 Material 정보가 바뀔 때만 업데이트 되도록 하였습니다. 
+RAM에서 GPU로 데이터를 보내는 연산 또한 꽤 시간이 드는 연산인데 이 연산을 많이 줄일 수 있습니다.
