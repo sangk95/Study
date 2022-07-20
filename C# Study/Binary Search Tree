@@ -13,3 +13,8 @@
 트리 스스로 다시 밸런싱(Self balancing)하여검색 최적화를 유지할 수 있다.
 이러한 트리를 Self-Balancing Binary Search Tree 또는 Balanced Search Tree라 하는데,
 가장 보편적인 방식으로 AVL Tree, Red-Black Tree 등을 들 수 있다.
+
+.NET에서 MAP ADT를 구현한 클래스로는
+해시테이블을 이용한 Hashtable/Dictionary클래스,
+이진검색트리를 이용한 SortedDictionary, 
+그리고 배열을 이용한 SortedList 등이 있다.
