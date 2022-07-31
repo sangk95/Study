@@ -19,10 +19,11 @@ MonoBehaviour와는 달리 게임 오브젝트에 ScriptableObject를 연결할 
 에디터 툴에서 에셋 형태로 ScriptableObject에 저장한 데이터는 디스크에 작성되므로 세션 간에도 그대로 유지됩니다.
 
 
-ScriptableObject의 주요 사용 사례는 다음과 같습니다.
+ScriptableObject의 주요 사용 사례
 
 ● 에디터 세션 동안 데이터 저장 및 보관
 ● 데이터를 프로젝트의 에셋으로 저장하여 런타임 시 사용
+● base data / unvariable data에 적용
 
 
 ⨀ 주의점
