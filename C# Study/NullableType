@@ -1,0 +1,34 @@
+NullableType
+
+Null을 가질 수 없는 데이터 타입을 Null을 가질 수 있는 타입으로 만든 새로운 타입.
+ValueType은 nNull을 가질 수 없다.(ex. int, double, bool, struct)
+int를 nullable int type으로 변경하면 값이 할당 되었는지 아닌지 확인 할 수 있다.
+
+
+⨀ 선언 방법
+- Nullable<T> 변수명
+ex. Nullable<int> num;
+- T? 변수명
+ex. int? num;
+
+
+⨀ 사용법
+Nullable<int> a;    // int? a;
+a = null;
+Console.WriteLine(a);                       // null이 나옵니다.
+Console.WriteLine(a.HasValue);              // 할당된 값이 없으므로 false
+Console.WriteLine(a.Value);                 // 할당된 값이 없으므로 예외
+Console.WriteLine(a.GetValueOrDefault());   // 할당된 값이 없으므로 int 타입의 default 값인 0 이 반환됩니다.
+int? b;            // Nullable<int> b;
+b = 10;
+Console.WriteLine(b);                       // 10이 나옵니다.
+Console.WriteLine(b.HasValue);              // 할당된 값이 있으므로 true
+Console.WriteLine(b.Value);                 // 할당된 값이 있으므로 10
+Console.WriteLine(b.GetValueOrDefault());   // 할당된 값이 있으므로 10이 반환됩니다.
+
+
+- HasValue 속성을 통해서 null이 아닌 값이 할당되었는지 확인할 수 있다.
+- Value 속성을 통해서 할당된 값을 확인할수 있지만, 만약 할당 값이 없다면 예외를 던진다. 
+  그렇기 때문에 HasValue를 통해서 값이 있는지 확인 후에 Value 속성을 확인하는걸 추천.
+- GetValueOrDefault() 메소드는 값이 있다면 해당 값을 반환하고,
+  만약 값이 없다면 해당 데이터 타입의 기본(Default)값을 반환한다.
