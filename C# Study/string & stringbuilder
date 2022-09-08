@@ -1,0 +1,37 @@
+문자열 조합
+
+⨀ String
+String은 Value타입이 아닌 Ref타입이다.
+즉, 문자열을 조합할때마다 새로운 Class가 생성되며
+이전의 데이터는 GB(가비지 콜렉터)에 의해 수집된다. 
+따라서 문자열을 조합할때마다 부하가 발생하게 됩니다.
+ 
+string name = "철수" + "영희" + "길동";
+Console.WriteLine(name);
+위 경우 총 3개의 String instance가 생성이 된다. 
+그리고 앞선 2개의 인스턴스는 GB에 의해 언젠가 수집돼야 한다. 
+결국 메모리 낭비가 발생하며 비효율적인 코드가 생성된다.
+
+
+⨀ Stringbuilder
+Stringbuilder를 사용하면 문자열을 조합할때마다 
+새로운 변수를 생성할 필요가 없다.
+Stringbuilder 내부 자체적으로 함수를 가지고 있어서 
+값들을 조합하고 삭제할때 인스턴스를 추가발생시키지 않는다.
+
+Stringbuilder names = new Stringbuilder();
+names.Append("철수");
+names.Append(" 영희");
+names.Append(" 길동");
+ 
+Console.WriteLine(names.ToString());
+ 
+
+⨀ 사용하는 경우
+ο string
+ - 문자열의 수가 적을 경우 (stringbuilder는 string에 비해 무시해도 좋을 정도의 성능향상을 보이거나 전혀 없을 수 있다)
+ - 문자열을 작성하는 동안 광범위한 검색 작업이 예상될때 (stringbuilder에는 IndexOf 또는 StartWith같은 함수가 없기 때문)
+
+ο stringbuilder
+ - 응용 프로그램이 설계시에 알 수 없는 횟수의 문자열을 변경해야 할 때 (사용자의 입력등으로 문자열 조합이 이루어질 때)
+ - 문자열에서 많은 횟수의 변경이 예상 될 때
