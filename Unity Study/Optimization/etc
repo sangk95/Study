@@ -81,7 +81,14 @@ void OnTriggerEnter(Collider other)
 Input.GetTouch()와 Input.touchCount는 힙 할당을 일으키니 Input.touches를 사용한다.
 
 ⭕ 코루틴에서 발생하는 가비지
-yield 자체는 힙 할당을 하지 않지만 전달하는 값은 박싱이 되기 때문에 힙 할당이 발생할 수 있다.
+StartCoroutine할때 마다 가비지가 생성되므로, 되도록 여러번 호출하지 말고
+   ------------------------------------------------------
+  || yield return new WaitUntil(() => Unit.isActivate); ||
+  || -> Unit.isActivate가 true가 될때까지 대기한다.       ||
+   ------------------------------------------------------
+  위와 같은 방식으로 멈춰놓자.
+  
+또한, yield 자체는 힙 할당을 하지 않지만 전달하는 값은 박싱이 되기 때문에 힙 할당이 발생할 수 있다.
 yield return 0; // 0인 int 값 변수가 boxing되기 때문에 가비지를 발생시킨다.
 new 를 통해 생성하는 객체는 가비지를 만든다.
 ---------------------------------------------
