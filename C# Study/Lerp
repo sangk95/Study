@@ -1,0 +1,4 @@
+https://www.construct.net/en/blogs/ashleys-blog-2/using-lerp-delta-time-924
+
+a = lerp(a, b, 1 - f ^ dt);  // f ^ dt = Mathf.Pow(f, dt)
+
