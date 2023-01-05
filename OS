@@ -83,3 +83,100 @@
   반면 Semaphore는 Semaphore를 소유하지 않는 스레드가 Semaphore를 해제할 수 있습니다.
 - Semaphore는 시스템 범위에 걸쳐 있고, 파일 시스템 상의 파일로 존재합니다.
   반면, Mutex는 프로세스의 범위를 가지며 프로세스 종료될 때 자동으로 Clean up 됩니다.
+  
+  
+🚀 멀티쓰레드 프로그래밍
+🔴 Locality
+-기억 장치 내의 정보를 균일하게 접근하는 것이 아닌 어느 한순간에 특정 부분을 집중적으로 참조하는 특성
+
+1. Temporal locality
+최근 사용되었던 기억 장소들이 집중적으로 엑세스되는 경향.
+프로그램 실행시 한번 접근이 이루어진 주소의 메모리 영역은 자주 접하게 된다는 프로그램 성격 표현.
+예) 순환, Sub program, Stack 등등.
+
+2. Spatical locality
+특정 클레스터의 기억 장소들에대해 참조가 집중적으로 이루어지는 경향.
+프로그램 실행시 접근하는 메모리의 영역은 이미 접근이 이루어진 영역의 근처일 확률이 높다는 프로그램 성격 표현.
+예) Sequential processing, Array 등등.
+
+🔴 메모리 배리어
+- 코드 재배치 억제
+- 가시성 ( 커밋 & 업데이트 )
+
+- Full Memory Barrier (ASM MFENCE, C# Thread.MemoryBarrier) : Store/Load 둘다 막음
+- Store Memory Barrier (ASM SFENCE) : Store 만 막음 ( 값 작성 : x = 1 )
+- Load  Memory Barrier (ASM LFENCE) : Load 만 막음 ( 값 대입 : x = y )
+
+🔴 Race Condition ( 경합 조건 )
+- atomic = 원자성  -> 묶어서 한번에 실행 시켜야하는~ ex. 상점 구입( 템 획득 & 돈 차감 )
+
+🔴 Lock
+- 종류 : SpinLock / Context Switching / Auto Reset Event / ReaderWriterLockSlim
+- SpinLock : 계속 대기하며 체크
+
+    class SpinLock
+    {
+        volatile int _locked = 0;
+        public void Acquire()
+        {
+            while (true)
+            {
+                // CAS : Compare And Swap
+                int expected = 0;
+                int desired = 1;
+                if(Interlocked.CompareExchange(ref _locked, desired, expected) == expected)
+                    break;
+            }
+        }
+        public void Release()
+        {
+            _locked = 0;
+        }
+    }
+
+- Context Switching
+Thread.Sleep(1);  => 무조건 휴식
+Thread.Sleep(0);  => 조건부 양보 - 우선순위가 낮은 쓰레드한테는 양보 불가
+Thread.Yield( );    => 관대한 양보 - 실행가능한 쓰레드가 있으면 양보
+
+- AutoResetEvent
+
+        AutoResetEvent _available = new AutoResetEvent(true);
+        public void Acquire()
+        {
+            _available.WaitOne();
+        }
+        public void Release()
+        {
+            _available.Set();
+        }
+
+
+- 상호배제 => Monitor.Enter(obj) - Monitor.Exit(obj)
+   -> Enter만 하고 Exit하지 않는경우 DeadLock 발생
+   -> lock() { } 사용하면 Exit 자동
+
+🔴 Thread Local Storage
+TLS의 필요성을 살펴보자, 게임서버 같은 경우에는 락이 여러군데에 존재한다. 
+그 이유는 쓰레드와 태스크를 일대일로 잘 배분했다 하더라도 
+쓰레드가 하나의 태스크에 몰리게 되는 상황이 생겨날 수 있을 것이다. 
+이러한 경우 충돌이 일어나기 때문에 lock을 걸기 위해 mutex가 존재하게 된다. 
+이 경우 경합에서 지게되는 쓰레드들은 모두 대기 상태로 들어가기 때문에 
+쓰레드가 일을 하지 못하게 되는 문제가 발생하게 된다. 
+이것을 막기 위해 우리는 TLS를 사용한다.
+
+💎 TLS란?
+TLS는 쓰레드가 각각 가지고 있는 저장소이다.
+이 곳에 저장되는 값들은 전역변수 이지만, 
+한 쓰레드 내에서만 유효한 전역 변수이다. 
+이러한 면에서 Stack과는 차이가 있다.
+그래서 이 TLS을 이용해서 쓰레드가 집중된 task를 빠르게 처리하는가? 하면, 
+공유하는 영역인 Heap, 데이터 영역의 값을 사용 할 만큼 큼직하게 잘라서 TLS로 가져온다. 
+이 과정만 하기 때문에 부하가 크지는 않을 것이다. 
+이렇게 공유영역에서 가져온 값을 TLS로 옮기면 그 이후에 mutex를 차지하기 위한 경합이 일어나지 않을 것이다. 
+  
+  
+  
+  
+  
+  
